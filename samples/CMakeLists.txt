@@ -1,0 +1,6 @@
+add_subdirectory(echobot)
+add_subdirectory(echobot-curl-client)
+add_subdirectory(echobot-submodule)
+add_subdirectory(echobot-webhook-server)
+add_subdirectory(inline-keyboard)
+add_subdirectory(photo)

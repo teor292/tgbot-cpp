@@ -4,6 +4,7 @@ project(TgBot)
 # options
 option(ENABLE_TESTS "Set to ON to enable building of tests" OFF)
 option(BUILD_SHARED_LIBS "Build tgbot-cpp shared/static library." OFF)
+option(BUILD_SAMPLES "Build samples" OFF)
 
 # sources
 if(WIN32)
@@ -84,4 +85,10 @@ if (ENABLE_TESTS)
     message(STATUS "Building of tests is enabled")
     enable_testing()
     add_subdirectory(test)
+endif()
+
+# samples
+if (BUILD_SAMPLES)
+    message(STATUS "Building of samples is enabled")
+    add_subdirectory(samples)
 endif()
