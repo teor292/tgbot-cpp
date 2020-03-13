@@ -3,7 +3,8 @@ project(TgBot)
 
 # options
 option(ENABLE_TESTS "Set to ON to enable building of tests" OFF)
-option(BUILD_SHARED_LIBS "Build tgbot-cpp shared/static library." OFF)
+option(BUILD_SHARED_LIBS "Build tgbot-cpp shared/static library" OFF)
+option(CONAN_BUILD "Use Conan for 3rd-party libraries" OFF)
 
 # sources
 if(WIN32)
@@ -29,40 +30,72 @@ set(SRC_LIST
     src/types/InlineQueryResult.cpp
     src/types/InputFile.cpp)
 
-# libs
 ## threads
 find_package(Threads REQUIRED)
 
-## zlib
-find_package(ZLIB REQUIRED)
+set(LIB_LIST)
 
-## openssl
-find_package(OpenSSL REQUIRED)
-include_directories(${OPENSSL_INCLUDE_DIR})
+if (CONAN_BUILD)
+    # Download automatically, you can also just copy the conan.cmake file
+    if(NOT EXISTS "${CMAKE_BINARY_DIR}/conan.cmake")
+        message(STATUS "Downloading conan.cmake from https://github.com/conan-io/cmake-conan")
+        file(DOWNLOAD "https://github.com/conan-io/cmake-conan/raw/v0.15/conan.cmake"
+                "${CMAKE_BINARY_DIR}/conan.cmake")
+    endif()
 
-## curl
-find_package(CURL 7.56.0)
-if (CURL_FOUND)
-    include_directories(${CURL_INCLUDE_DIRS})
-    add_definitions(-DHAVE_CURL)
-endif()
+    include(${CMAKE_BINARY_DIR}/conan.cmake)
 
-## boost
-set(Boost_USE_MULTITHREADED ON)
-if (ENABLE_TESTS)
-    find_package(Boost 1.59.0 COMPONENTS system unit_test_framework REQUIRED)
+    conan_cmake_run(REQUIRES
+            zlib/1.2.11@conan/stable
+            OpenSSL/1.1.1c@conan/stable
+            libcurl/7.56.1@bincrafters/stable
+            boost/1.71.0@conan/stable
+            BASIC_SETUP
+            CMAKE_TARGETS
+            BUILD missing)
+
+    set(LIB_LIST
+            ${CMAKE_THREAD_LIBS_INIT}
+            CONAN_PKG::zlib
+            CONAN_PKG::OpenSSL
+            CONAN_PKG::libcurl
+            CONAN_PKG::boost
+            )
 else()
-    find_package(Boost 1.59.0 COMPONENTS system REQUIRED)
-endif()
-include_directories(${Boost_INCLUDE_DIR})
+    # libs
+    ## zlib
+    find_package(ZLIB REQUIRED)
 
-set(LIB_LIST
-    ${CMAKE_THREAD_LIBS_INIT}
-    ${ZLIB_LIBRARIES}
-    ${OPENSSL_LIBRARIES}
-    ${Boost_LIBRARIES}
-    ${CURL_LIBRARIES}
-)
+    ## openssl
+    find_package(OpenSSL REQUIRED)
+    include_directories(${OPENSSL_INCLUDE_DIR})
+
+    ## curl
+    find_package(CURL 7.56.0)
+    if (CURL_FOUND)
+        include_directories(${CURL_INCLUDE_DIRS})
+        add_definitions(-DHAVE_CURL)
+    endif()
+
+    ## boost
+    set(Boost_USE_MULTITHREADED ON)
+    if (ENABLE_TESTS)
+        find_package(Boost 1.59.0 COMPONENTS system unit_test_framework REQUIRED)
+    else()
+        find_package(Boost 1.59.0 COMPONENTS system REQUIRED)
+    endif()
+    include_directories(${Boost_INCLUDE_DIR})
+
+    set(LIB_LIST
+            ${CMAKE_THREAD_LIBS_INIT}
+            ${ZLIB_LIBRARIES}
+            ${OPENSSL_LIBRARIES}
+            ${Boost_LIBRARIES}
+            ${CURL_LIBRARIES}
+            )
+endif()
+
+
 
 # building project
 add_library(${PROJECT_NAME} ${SRC_LIST})
