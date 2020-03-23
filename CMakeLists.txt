@@ -22,7 +22,6 @@ set(SRC_LIST
     src/EventHandler.cpp
     src/TgException.cpp
     src/TgTypeParser.cpp
-    src/net/BoostHttpOnlySslClient.cpp
     src/net/CurlHttpClient.cpp
     src/net/HttpParser.cpp
     src/net/TgLongPoll.cpp
