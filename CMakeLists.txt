@@ -44,11 +44,8 @@ find_package(OpenSSL REQUIRED)
 include_directories(${OPENSSL_INCLUDE_DIR})
 
 ## curl
-find_package(CURL 7.56.0)
-if (CURL_FOUND)
-    include_directories(${CURL_INCLUDE_DIRS})
-    add_definitions(-DHAVE_CURL)
-endif()
+find_package(CURL REQUIRED)
+include_directories(${CURL_INCLUDE_DIRS})
 
 ## boost
 set(Boost_USE_MULTITHREADED ON)

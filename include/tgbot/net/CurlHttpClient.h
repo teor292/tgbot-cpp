@@ -1,17 +1,16 @@
 #ifndef TGBOT_CURLHTTPCLIENT_H
 #define TGBOT_CURLHTTPCLIENT_H
 
-#ifdef HAVE_CURL
-
 #include "tgbot/net/HttpClient.h"
 #include "tgbot/net/Url.h"
 #include "tgbot/net/HttpReqArg.h"
 #include "tgbot/net/HttpParser.h"
 
-#include <curl/curl.h>
-
 #include <string>
 #include <vector>
+
+// fwd decl
+typedef void CURL;
 
 namespace TgBot {
 
@@ -44,7 +43,5 @@ private:
 };
 
 }
-
-#endif
 
 #endif //TGBOT_CURLHTTPCLIENT_H

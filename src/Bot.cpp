@@ -1,9 +1,7 @@
-// FIXME: move this header below Bot.h
-// currently there is winsock.h error on win
-#include "tgbot/net/BoostHttpOnlySslClient.h"
 #include "tgbot/Bot.h"
 
 #include "tgbot/EventBroadcaster.h"
+#include "tgbot/net/CurlHttpClient.h"
 
 #include <memory>
 #include <string>
@@ -18,7 +16,7 @@ Bot::Bot(std::string token, const HttpClient& httpClient)
 }
 
 HttpClient& Bot::_getDefaultHttpClient() {
-    static BoostHttpOnlySslClient instance;
+    static CurlHttpClient instance;
     return instance;
 }
 

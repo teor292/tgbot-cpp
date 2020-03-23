@@ -1,8 +1,6 @@
-#ifdef HAVE_CURL
-
 #include "tgbot/net/CurlHttpClient.h"
 
-#include <boost/asio/ssl.hpp>
+#include <curl/curl.h>
 
 #include <cstddef>
 #include <string>
@@ -69,5 +67,3 @@ std::string CurlHttpClient::makeRequest(const Url& url, const std::vector<HttpRe
 }
 
 }
-
-#endif
