@@ -43,7 +43,7 @@ find_package(OpenSSL REQUIRED)
 include_directories(${OPENSSL_INCLUDE_DIR})
 
 ## curl
-find_package(CURL REQUIRED)
+find_package(CURL 7.56.0 REQUIRED)
 include_directories(${CURL_INCLUDE_DIRS})
 
 ## boost
