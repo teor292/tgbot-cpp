@@ -1,3 +1,5 @@
+// FIXME: move this header below Bot.h
+// currently there is winsock.h error on win
 #include "tgbot/net/BoostHttpOnlySslClient.h"
 #include "tgbot/Bot.h"
 
