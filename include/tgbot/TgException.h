@@ -19,6 +19,11 @@ public:
     explicit TgException(const std::string& description);
 };
 
+class TGBOT_API TgBlockedException : public TgException {
+public:
+    using TgException::TgException;
+};
+
 }
 
 #endif //TGBOT_TGEXCEPTION_H

@@ -42,7 +42,17 @@ std::string CurlHttpClient::makeRequest(const Url& url, const std::vector<HttpRe
         for (const HttpReqArg& a : args) {
             part = curl_mime_addpart(mime);
 
-            curl_mime_data(part, a.value.c_str(), a.value.size());
+            if (a.value.which() == 0)
+            {
+                auto& value = boost::get<std::shared_ptr<std::vector<unsigned char>>>(a.value);
+                curl_mime_data(part, reinterpret_cast<char*>(value->data()), value->size());
+            }
+            else
+            {
+                auto& value = boost::get<std::string>(a.value);
+                curl_mime_data(part, value.c_str(), value.size());
+            }
+            //curl_mime_data(part, a.value.c_str(), a.value.size());
             curl_mime_type(part, a.mimeType.c_str());
             curl_mime_name(part, a.name.c_str());
             if (a.isFile) {

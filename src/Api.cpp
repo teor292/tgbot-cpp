@@ -64,7 +64,8 @@ Message::Ptr Api::sendPhoto(std::int64_t chatId, boost::variant<InputFile::Ptr, 
     args.emplace_back("chat_id", chatId);
     if (photo.which() == 0 /* InputFile::Ptr */) {
         auto file = boost::get<InputFile::Ptr>(photo);
-        args.emplace_back("photo", file->data, true, file->mimeType, file->fileName);
+        //args.emplace_back("photo", file->data, true, file->mimeType, file->fileName);
+        args.emplace_back("photo", file);
     } else /* std::string */ {
         args.emplace_back("photo", boost::get<std::string>(photo));
     }
@@ -1188,7 +1189,13 @@ ptree Api::sendRequest(const string& method, const vector<HttpReqArg>& args) con
         if (result.get<bool>("ok", false)) {
             return result.get_child("result");
         } else {
-            throw TgException(result.get("description", ""));
+            const std::string BLOCKED = "Forbidden: bot was blocked by the user";
+            std::string description = result.get("description", "");
+            if (BLOCKED == description)
+            {
+                throw TgBlockedException(description);
+            }
+            throw TgException(description);
         }
     } catch (boost::property_tree::ptree_error& e) {
         throw TgException("tgbot-cpp library can't parse json response. " + string(e.what()));

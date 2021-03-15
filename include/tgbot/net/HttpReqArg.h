@@ -4,7 +4,8 @@
 #include "tgbot/export.h"
 
 #include <boost/lexical_cast.hpp>
-
+#include <boost/variant.hpp>
+#include "tgbot/types/InputFile.h"
 #include <string>
 #include <vector>
 #include <functional>
@@ -25,7 +26,10 @@ public:
     {
     }
 
-    /**
+    HttpReqArg(std::string name, InputFile::Ptr& image) :
+        name(std::move(name)), value(image->data), isFile(true), mimeType(image->mimeType), fileName(image->fileName)
+    {
+    }    /**
      * @brief Name of an argument.
      */
     std::string name;
@@ -33,7 +37,8 @@ public:
     /**
      * @brief Value of an argument.
      */
-    std::string value;
+    boost::variant<std::shared_ptr<std::vector<unsigned char>>, std::string> value;
+    //std::string value;
 
     /**
      * @brief Should be true if an argument value hold some file contents

@@ -2,7 +2,8 @@
 #define TGBOT_FILETOOLS_H
 
 #include "tgbot/export.h"
-
+#include <memory>
+#include <vector>
 #include <string>
 
 /**
@@ -17,7 +18,7 @@ namespace FileTools {
  * @return string with file contents
  */
 TGBOT_API
-std::string read(const std::string& filePath);
+std::shared_ptr<std::vector<unsigned char>> read(const std::string& filePath);
 
 /**
  * Save file to disk.

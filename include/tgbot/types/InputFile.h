@@ -5,6 +5,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 
 namespace TgBot {
 
@@ -21,7 +22,8 @@ public:
     /**
      * @brief Contents of a file.
      */
-    std::string data;
+    std::shared_ptr<std::vector<unsigned char>> data;
+    //std::string data;
 
     /**
      * @brief Mime type of a file.
