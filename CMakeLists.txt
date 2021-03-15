@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.12)
+cmake_minimum_required(VERSION 2.8.4)
 project(TgBot)
 
 # options
@@ -53,11 +53,11 @@ endif()
 
 ## boost
 set(Boost_USE_MULTITHREADED ON)
-if (ENABLE_TESTS)
-    find_package(Boost 1.59.0 COMPONENTS system unit_test_framework REQUIRED)
-else()
-    find_package(Boost 1.59.0 COMPONENTS system REQUIRED)
-endif()
+#if (ENABLE_TESTS)
+#    find_package(Boost 1.59.0 COMPONENTS system unit_test_framework REQUIRED)
+#else()
+#    find_package(Boost 1.59.0 COMPONENTS system REQUIRED)
+#endif()
 include_directories(${Boost_INCLUDE_DIR})
 link_directories(${Boost_LIBRARY_DIR_RELEASE})
 if(NOT Boost_USE_STATIC_LIBS)
