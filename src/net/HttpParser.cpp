@@ -71,7 +71,7 @@ namespace TgBot {
         {
             return result * 2;
         }
-        return result + 1024 * 10; //+ 10 ¡;
+        return result + 1024 * 10; //+ 10–ö–ë;
     }
 
     size_t HttpParser::calculate_approximate_multipart_size(const std::vector<HttpReqArg>& args) const
@@ -93,7 +93,7 @@ namespace TgBot {
             result += NEW_LINE.size();
             if (item.value.which() == 0)
             {
-                auto& value = boost::get<std::shared_ptr<std::vector<unsigned char>>>(item.value);
+                auto& value = boost::get<std::shared_ptr<std::vector<std::uint8_t>>>(item.value);
 
                 result += value->size();
 
@@ -130,7 +130,7 @@ namespace TgBot {
             result += NEW_LINE.size();
             if (item.value.which() == 0)
             {
-                auto& value = boost::get<std::shared_ptr<std::vector<unsigned char>>>(item.value);
+                auto& value = boost::get<std::shared_ptr<std::vector<std::uint8_t>>>(item.value);
 
                 result += value->size();
             }

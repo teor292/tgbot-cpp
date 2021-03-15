@@ -19,6 +19,11 @@ public:
     InputMediaPhoto() {
         this->type = TYPE::PHOTO;
     }
+
+    InputMediaPhoto(LocalMedia&& m) : InputMediaPhoto()
+    {
+        this->media = std::move(m);
+    }
 };
 }
 

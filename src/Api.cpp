@@ -63,7 +63,7 @@ Message::Ptr Api::sendPhoto(std::int64_t chatId, boost::variant<InputFile::Ptr, 
     args.reserve(7);
     args.emplace_back("chat_id", chatId);
     if (photo.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(photo);
+        auto &file = boost::get<InputFile::Ptr>(photo);
         //args.emplace_back("photo", file->data, true, file->mimeType, file->fileName);
         args.emplace_back("photo", file);
     } else /* std::string */ {
@@ -92,7 +92,7 @@ Message::Ptr Api::sendAudio(std::int64_t chatId, boost::variant<InputFile::Ptr, 
     args.reserve(11);
     args.emplace_back("chat_id", chatId);
     if (audio.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(audio);
+        auto& file = boost::get<InputFile::Ptr>(audio);
         args.emplace_back("audio", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
         args.emplace_back("audio", boost::get<std::string>(audio));
@@ -110,10 +110,10 @@ Message::Ptr Api::sendAudio(std::int64_t chatId, boost::variant<InputFile::Ptr, 
         args.emplace_back("title", title);
     }
     if (thumb.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(thumb);
+        auto& file = boost::get<InputFile::Ptr>(thumb);
         args.emplace_back("thumb", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
-        auto thumbStr = boost::get<std::string>(thumb);
+        auto& thumbStr = boost::get<std::string>(thumb);
         if (!thumbStr.empty()) {
             args.emplace_back("thumb", thumbStr);
         }
@@ -138,16 +138,16 @@ Message::Ptr Api::sendDocument(std::int64_t chatId, boost::variant<InputFile::Pt
     args.reserve(8);
     args.emplace_back("chat_id", chatId);
     if (document.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(document);
+        auto& file = boost::get<InputFile::Ptr>(document);
         args.emplace_back("document", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
         args.emplace_back("document", boost::get<std::string>(document));
     }
     if (thumb.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(thumb);
+        auto& file = boost::get<InputFile::Ptr>(thumb);
         args.emplace_back("thumb", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
-        auto thumbStr = boost::get<std::string>(thumb);
+        auto& thumbStr = boost::get<std::string>(thumb);
         if (!thumbStr.empty()) {
             args.emplace_back("thumb", thumbStr);
         }
@@ -266,7 +266,7 @@ Message::Ptr Api::sendSticker(std::int64_t chatId, boost::variant<InputFile::Ptr
     args.reserve(5);
     args.emplace_back("chat_id", chatId);
     if (sticker.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(sticker);
+        auto &file = boost::get<InputFile::Ptr>(sticker);
         args.emplace_back("sticker", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
         args.emplace_back("sticker", boost::get<std::string>(sticker));
@@ -305,7 +305,7 @@ bool Api::createNewStickerSet(std::int32_t userId, const string& name, const str
     args.emplace_back("name", name);
     args.emplace_back("title", title);
     if (pngSticker.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(pngSticker);
+        auto &file = boost::get<InputFile::Ptr>(pngSticker);
         args.emplace_back("png_sticker", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
         args.emplace_back("png_sticker", boost::get<std::string>(pngSticker));
@@ -326,7 +326,7 @@ bool Api::addStickerToSet(std::int32_t userId, const string& name, boost::varian
     args.emplace_back("user_id", userId);
     args.emplace_back("name", name);
     if (pngSticker.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(pngSticker);
+        auto &file = boost::get<InputFile::Ptr>(pngSticker);
         args.emplace_back("png_sticker", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
         args.emplace_back("png_sticker", boost::get<std::string>(pngSticker));
@@ -358,7 +358,7 @@ Message::Ptr Api::sendVideo(std::int64_t chatId, boost::variant<InputFile::Ptr, 
     args.reserve(12);
     args.emplace_back("chat_id", chatId);
     if (video.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(video);
+        auto &file = boost::get<InputFile::Ptr>(video);
         args.emplace_back("video", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
         args.emplace_back("video", boost::get<std::string>(video));
@@ -376,10 +376,10 @@ Message::Ptr Api::sendVideo(std::int64_t chatId, boost::variant<InputFile::Ptr, 
         args.emplace_back("height", height);
     }
     if (thumb.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(thumb);
+        auto &file = boost::get<InputFile::Ptr>(thumb);
         args.emplace_back("thumb", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
-        auto thumbStr = boost::get<std::string>(thumb);
+        auto &thumbStr = boost::get<std::string>(thumb);
         if (!thumbStr.empty()) {
             args.emplace_back("thumb", thumbStr);
         }
@@ -407,7 +407,7 @@ Message::Ptr Api::sendAnimation(std::int64_t chatId, boost::variant<InputFile::P
     args.reserve(11);
     args.emplace_back("chat_id", chatId);
     if (animation.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(animation);
+        auto &file = boost::get<InputFile::Ptr>(animation);
         args.emplace_back("animation", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
         args.emplace_back("animation", boost::get<std::string>(animation));
@@ -422,10 +422,10 @@ Message::Ptr Api::sendAnimation(std::int64_t chatId, boost::variant<InputFile::P
         args.emplace_back("height", height);
     }
     if (thumb.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(thumb);
+        auto &file = boost::get<InputFile::Ptr>(thumb);
         args.emplace_back("thumb", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
-        auto thumbStr = boost::get<std::string>(thumb);
+        auto &thumbStr = boost::get<std::string>(thumb);
         if (!thumbStr.empty()) {
             args.emplace_back("thumb", thumbStr);
         }
@@ -453,7 +453,7 @@ Message::Ptr Api::sendVideoNote(std::int64_t chatId, boost::variant<InputFile::P
     args.reserve(8);
     args.emplace_back("chat_id", chatId);
     if (videoNote.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(videoNote);
+        auto &file = boost::get<InputFile::Ptr>(videoNote);
         args.emplace_back("video_note", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
         args.emplace_back("video_note", boost::get<std::string>(videoNote));
@@ -468,10 +468,10 @@ Message::Ptr Api::sendVideoNote(std::int64_t chatId, boost::variant<InputFile::P
         args.emplace_back("length", length);
     }
     if (thumb.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(thumb);
+        auto &file = boost::get<InputFile::Ptr>(thumb);
         args.emplace_back("thumb", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
-        auto thumbStr = boost::get<std::string>(thumb);
+        auto &thumbStr = boost::get<std::string>(thumb);
         if (!thumbStr.empty()) {
             args.emplace_back("thumb", thumbStr);
         }
@@ -487,12 +487,21 @@ Message::Ptr Api::sendVideoNote(std::int64_t chatId, boost::variant<InputFile::P
 
 vector<Message::Ptr> Api::sendMediaGroup(std::int64_t chatId, const vector<InputMedia::Ptr>& media, bool disableNotification, std::int32_t replyToMessageId) const {
     vector<HttpReqArg> args;
-    args.reserve(4);
+    args.reserve(4 + media.size());
     args.emplace_back("chat_id", chatId);
     string mediaJson = _tgTypeParser.parseArray<InputMedia>(&TgTypeParser::parseInputMedia, media);
     args.emplace_back("media", mediaJson);
     args.emplace_back("disable_notification", disableNotification);
     args.emplace_back("reply_to_message_id", replyToMessageId);
+
+    for (auto& m : media)
+    {
+        if (m->media.which() == 0)
+        {
+            args.emplace_back(m);
+        }
+    }
+
     return _tgTypeParser.parseJsonAndGetArray<Message>(&TgTypeParser::parseJsonAndGetMessage, sendRequest("sendMediaGroup", args));
 }
 
@@ -501,7 +510,7 @@ Message::Ptr Api::sendVoice(std::int64_t chatId, boost::variant<InputFile::Ptr, 
     args.reserve(8);
     args.emplace_back("chat_id", chatId);
     if (voice.which() == 0 /* InputFile::Ptr */) {
-        auto file = boost::get<InputFile::Ptr>(voice);
+        auto &file = boost::get<InputFile::Ptr>(voice);
         args.emplace_back("voice", file->data, true, file->mimeType, file->fileName);
     } else /* std::string */ {
         args.emplace_back("voice", boost::get<std::string>(voice));

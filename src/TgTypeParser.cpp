@@ -788,7 +788,19 @@ string TgTypeParser::parseInputMedia(const InputMedia::Ptr& object) const {
             appendToJson(result, "type", "audio");
         break;
     }
-    appendToJson(result, "media", object->media);
+
+    if (object->media.which() == 0)
+    {
+        auto& media = boost::get<LocalMedia>(object->media);
+        std::string tmp = "attach://" + media.fileName;
+        appendToJson(result, "media", tmp);
+    }
+    else
+    {
+        appendToJson(result, "media", boost::get<std::string>(object->media));
+    }
+
+
     appendToJson(result, "caption", object->caption);
     appendToJson(result, "parse_mode", object->parseMode);
     if (object->width) {

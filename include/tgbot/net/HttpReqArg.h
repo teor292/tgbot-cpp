@@ -6,6 +6,7 @@
 #include <boost/lexical_cast.hpp>
 #include <boost/variant.hpp>
 #include "tgbot/types/InputFile.h"
+#include "tgbot/types/InputMedia.h"
 #include <string>
 #include <vector>
 #include <functional>
@@ -29,7 +30,22 @@ public:
     HttpReqArg(std::string name, InputFile::Ptr& image) :
         name(std::move(name)), value(image->data), isFile(true), mimeType(image->mimeType), fileName(image->fileName)
     {
-    }    /**
+    } 
+
+    HttpReqArg(const InputMedia::Ptr& media ) 
+    {
+        if (media->media.which() != 0)
+            throw std::logic_error("HttpReqArg can take only local media");
+
+        auto& tmp = boost::get<LocalMedia>(media->media);
+        name = tmp.fileName;
+        value = tmp.data;
+        isFile = true;
+        mimeType = tmp.mimeType;
+        fileName = tmp.fileName;
+    }
+    
+    /**
      * @brief Name of an argument.
      */
     std::string name;
@@ -37,7 +53,7 @@ public:
     /**
      * @brief Value of an argument.
      */
-    boost::variant<std::shared_ptr<std::vector<unsigned char>>, std::string> value;
+    boost::variant<std::shared_ptr<std::vector<std::uint8_t>>, std::string> value;
     //std::string value;
 
     /**

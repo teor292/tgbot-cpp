@@ -4,8 +4,18 @@
 #include <cstdint>
 #include <memory>
 #include <string>
+#include <vector>
+#include "boost/variant.hpp"
 
 namespace TgBot {
+
+
+struct LocalMedia
+{
+    std::string fileName;
+    std::shared_ptr<std::vector<std::uint8_t>> data;
+    std::string mimeType = "image/jpeg";
+};
 
 /**
  * @brief This object represents the content of a media message to be sent.
@@ -32,7 +42,8 @@ public:
     /**
      * @brief File to send. Pass a file_id to send a file that exists on the Telegram servers (recommended), pass an HTTP URL for Telegram to get a file from the Internet, or pass "attach://<file_attach_name>" to upload a new one using multipart/form-data under <file_attach_name> name.
      */
-    std::string media;
+    //std::string media;
+    boost::variant<LocalMedia, std::string> media;
 
     /**
      * @brief Optional. Thumbnail of the file sent.
@@ -80,6 +91,7 @@ public:
      * @brief Optional. Pass True, if the uploaded video is suitable for streaming
      */
     bool supportsStreaming = false;
+
 };
 }
 
