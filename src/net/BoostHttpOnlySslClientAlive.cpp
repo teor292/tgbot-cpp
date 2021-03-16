@@ -2,6 +2,8 @@
 
 
 #include <boost/algorithm/string.hpp>
+#include <boost/asio.hpp>
+#include <boost/asio/ssl.hpp>
 
 #include <cstddef>
 #include <vector>
@@ -13,8 +15,91 @@ using namespace boost::asio::ip;
 
 namespace TgBot 
 {
+    class SocketSslData
+    {
+    public:
 
-     BoostHttpOnlySslClientAlive::BoostHttpOnlySslClientAlive() : _httpParser()
+        boost::asio::io_service io_service;
+        std::unique_ptr<ssl::context> ctx_ptr;
+        std::unique_ptr<ssl::stream<tcp::socket>> sock_ptr;
+        std::string socket_host;
+
+        bool empty() const
+        {
+            return nullptr == sock_ptr;
+        }
+
+        bool same_host(const std::string& host) const
+        {
+            return socket_host == host;
+        }
+
+        void reset()
+        {
+            sock_ptr.reset();
+            ctx_ptr.reset();
+        }
+
+        void start_work(const std::string& host)
+        {
+            //if start_work is true here => some error occurred => close socket
+            if (!empty() && same_host(host) && !start_work_)
+            {
+                start_work_ = true;
+                return;
+            }
+            reset();
+
+            //assign start_work_ here because if exception during connect
+            //=> reset socket on next start_work() call
+            start_work_ = true;
+            socket_host = host;
+
+            tcp::resolver resolver(io_service);
+            tcp::resolver::query query(host, "443");
+
+            ctx_ptr.reset(new ssl::context(ssl::context::tlsv12_client));
+
+            ctx_ptr->set_default_verify_paths();
+            sock_ptr.reset(new ssl::stream<tcp::socket>(io_service, *ctx_ptr));
+
+            connect(sock_ptr->lowest_layer(), resolver.resolve(query));
+
+#ifdef TGBOT_DISABLE_NAGLES_ALGORITHM
+            sock_ptr->lowest_layer().set_option(tcp::no_delay(true));
+#endif //TGBOT_DISABLE_NAGLES_ALGORITHM
+#ifdef TGBOT_CHANGE_SOCKET_BUFFER_SIZE
+#if _WIN64 || __amd64__ || __x86_64__ || __MINGW64__ || __aarch64__ || __powerpc64__
+            sock_ptr->lowest_layer().set_option(socket_base::send_buffer_size(65536));
+            sock_ptr->lowest_layer().set_option(socket_base::receive_buffer_size(65536));
+#else //for 32-bit
+            sock_ptr->lowest_layer().set_option(socket_base::send_buffer_size(32768));
+            sock_ptr->lowest_layer().set_option(socket_base::receive_buffer_size(32768));
+#endif //Processor architecture
+#endif //TGBOT_CHANGE_SOCKET_BUFFER_SIZE
+            sock_ptr->set_verify_mode(ssl::verify_none);
+            sock_ptr->set_verify_callback(ssl::rfc2818_verification(host));
+
+            sock_ptr->handshake(ssl::stream<tcp::socket>::client);
+
+        }
+
+        void end_work(bool close_socket)
+        {
+            start_work_ = false;
+            if (close_socket)
+            {
+                reset();
+            }
+        }
+
+    private:
+
+        bool start_work_{ false };
+    };
+
+     BoostHttpOnlySslClientAlive::BoostHttpOnlySslClientAlive() : _httpParser(),
+         socket_data_(new SocketSslData())
      {}
 
     BoostHttpOnlySslClientAlive::~BoostHttpOnlySslClientAlive() {}
@@ -26,21 +111,21 @@ namespace TgBot
 
         boost::system::error_code error;
 
-        write(*socket_data_.sock_ptr, buffer(requestText.c_str(), requestText.length()), error);
+        write(*socket_data_->sock_ptr, buffer(requestText.c_str(), requestText.length()), error);
 
         if (error)
         {
             //try reopen socket
             start_work_socket_(url.host);
 
-            write(*socket_data_.sock_ptr, buffer(requestText.c_str(), requestText.length()));
+            write(*socket_data_->sock_ptr, buffer(requestText.c_str(), requestText.length()));
         }
 
         boost::asio::streambuf b(1024 * 1024);
 
 
         const static char DELIMETER[] = "\r\n\r\n";
-        read_until(*socket_data_.sock_ptr, b, DELIMETER, error);
+        read_until(*socket_data_->sock_ptr, b, DELIMETER, error);
 
         if (error)
         {
@@ -50,12 +135,12 @@ namespace TgBot
             //so try reopen socket and do write and read again
             start_work_socket_(url.host);
 
-            write(*socket_data_.sock_ptr, buffer(requestText.c_str(), requestText.length()));
+            write(*socket_data_->sock_ptr, buffer(requestText.c_str(), requestText.length()));
 
             //remove characters that read_until() write to buffer
             b.consume(b.size() + 1);
 
-            read_until(*socket_data_.sock_ptr, b, DELIMETER);
+            read_until(*socket_data_->sock_ptr, b, DELIMETER);
         }
 
         std::istream is(&b);
@@ -109,7 +194,7 @@ namespace TgBot
         if (response.size() > content_length)
             throw std::logic_error("response.size() > content_length"); //must never happened
 
-        read(*socket_data_.sock_ptr, b, boost::asio::transfer_exactly(content_length - response.size()));
+        read(*socket_data_->sock_ptr, b, boost::asio::transfer_exactly(content_length - response.size()));
 
         end_work_socket_(close_socket);
 
@@ -120,12 +205,12 @@ namespace TgBot
 
     void BoostHttpOnlySslClientAlive::start_work_socket_(const std::string& host) const
     {
-        socket_data_.start_work(host);
+        socket_data_->start_work(host);
     }
 
     void BoostHttpOnlySslClientAlive::end_work_socket_(bool close_socket) const
     {
-        socket_data_.end_work(close_socket);
+        socket_data_->end_work(close_socket);
     }
 
 }
