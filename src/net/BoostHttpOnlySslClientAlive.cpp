@@ -181,7 +181,10 @@ namespace TgBot
         }
 
         if (0 == content_length)
+        {
             throw std::logic_error("Content-Length not found in header");
+        }
+
 
         std::string remain{ (std::istreambuf_iterator<char>(&b)), std::istreambuf_iterator<char>() };
 

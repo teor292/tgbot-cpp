@@ -24,6 +24,11 @@ public:
     using TgException::TgException;
 };
 
+class TGBOT_API TgGateWaitTimeoutException : public TgException {
+public:
+    using TgException::TgException;
+};
+
 }
 
 #endif //TGBOT_TGEXCEPTION_H

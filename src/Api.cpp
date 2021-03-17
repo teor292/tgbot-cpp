@@ -1199,10 +1199,15 @@ ptree Api::sendRequest(const string& method, const vector<HttpReqArg>& args) con
             return result.get_child("result");
         } else {
             const std::string BLOCKED = "Forbidden: bot was blocked by the user";
+            const std::string GATE_WAY = "Gateway Timeout";
             std::string description = result.get("description", "");
             if (BLOCKED == description)
             {
                 throw TgBlockedException(description);
+            }
+            if (GATE_WAY == description)
+            {
+                throw TgGateWaitTimeoutException(description);
             }
             throw TgException(description);
         }
