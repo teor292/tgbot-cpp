@@ -6,7 +6,6 @@ Main differences:
 2) Add some optimization when send data (approx. calculate result size of string and use reserve method);
 3) use sendMediaGroup with local files (not found way to do it with original library);
 4) Add Boost client implementation that support keep-alive connection;
-5) Fix invalid symbols in boundary (;).
 
 [![Travis build Status](https://travis-ci.org/reo7sp/tgbot-cpp.svg?branch=master)](https://travis-ci.org/reo7sp/tgbot-cpp)
 <br>
