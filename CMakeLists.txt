@@ -34,6 +34,10 @@ file(GLOB SRC_LIST
     src/types/InlineQueryResult.cpp
     src/types/InputFile.cpp
     include/tgbot/*.h
+    include/tgbot/net/*.h
+    include/tgbot/tools/*.h
+    include/tgbot/types/*.h
+
 )
 
 # libs
