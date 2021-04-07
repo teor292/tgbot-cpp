@@ -17,7 +17,7 @@ else()
 endif()
 
 include_directories(include)
-set(SRC_LIST
+file(GLOB SRC_LIST
     src/Api.cpp
     src/Bot.cpp
     src/EventHandler.cpp
@@ -33,7 +33,8 @@ set(SRC_LIST
     src/tools/StringTools.cpp
     src/types/InlineQueryResult.cpp
     src/types/InputFile.cpp
-    include/tgbot/*.h)
+    include/tgbot/*.h
+)
 
 # libs
 ## threads
