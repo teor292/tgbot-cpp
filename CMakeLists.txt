@@ -18,21 +18,10 @@ endif()
 
 include_directories(include)
 file(GLOB SRC_LIST
-    src/Api.cpp
-    src/Bot.cpp
-    src/EventHandler.cpp
-    src/TgException.cpp
-    src/TgTypeParser.cpp
-    src/net/BoostHttpOnlySslClient.cpp
-	src/net/BoostHttpOnlySslClientAlive.cpp
-    src/net/CurlHttpClient.cpp
-    src/net/HttpParser.cpp
-    src/net/TgLongPoll.cpp
-    src/net/Url.cpp
-    src/tools/FileTools.cpp
-    src/tools/StringTools.cpp
-    src/types/InlineQueryResult.cpp
-    src/types/InputFile.cpp
+	src/*.cpp
+	src/net/*.cpp
+	src/tools/*.cpp
+	src/types/*.cpp
     include/tgbot/*.h
     include/tgbot/net/*.h
     include/tgbot/tools/*.h
@@ -60,6 +49,7 @@ endif()
 
 ## boost
 set(Boost_USE_MULTITHREADED ON)
+#when cross-compile CMake can't find boost, so must disable it and set variables manual
 #if (ENABLE_TESTS)
 #    find_package(Boost 1.59.0 COMPONENTS system unit_test_framework REQUIRED)
 #else()

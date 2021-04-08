@@ -42,6 +42,7 @@ namespace TgBot
         void start_work_socket_(const std::string& host) const;
 
         void end_work_socket_(bool close_socket) const;
+
     };
 
 }
